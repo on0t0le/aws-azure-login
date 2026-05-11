@@ -14,7 +14,7 @@
   },
   "bugs": "https://github.com/aws-azure-loginc/aws-azure-login/issues",
   "engines": {
-    "node": ">=12.0"
+    "node": ">=24.0"
   },
   "bin": {
     "aws-azure-login": "lib/index.js"
@@ -51,7 +51,7 @@
     "@types/inquirer": "^8.2.10",
     "@types/lodash": "^4.17.0",
     "@types/mkdirp": "^1.0.2",
-    "@types/node": "^20.11.30",
+    "@types/node": "^24.0.0",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
