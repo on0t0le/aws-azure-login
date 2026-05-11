@@ -24,6 +24,7 @@
     "aws-azure-login": "lib/index.js"
   },
   "scripts": {
+    "postinstall": "node scripts/postinstall.mjs",
     "start": "ts-node-dev src/index.ts",
     "build": "tsc",
     "watch": "tsc -w",
@@ -33,6 +34,7 @@
     "test": "npm run eslint && npm run prettier:check"
   },
   "dependencies": {
+    "@puppeteer/browsers": "^2.13.2",
     "@aws-sdk/client-sts": "^3.473.0",
     "@smithy/node-http-handler": "^2.5.0",
     "bluebird": "^3.7.2",
