@@ -32,6 +32,6 @@ jobs:
           fetch-depth: 0
       - uses: anothrNick/github-tag-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           DEFAULT_BUMP: patch
           WITH_V: true
