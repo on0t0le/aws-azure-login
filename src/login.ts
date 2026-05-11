@@ -5,7 +5,12 @@ import zlib from "zlib";
 import { STS, STSClientConfig } from "@aws-sdk/client-sts";
 import { load } from "cheerio";
 import { v4 } from "uuid";
-import puppeteer, { Browser, ElementHandle, HTTPRequest, Page } from "puppeteer";
+import puppeteer, {
+  Browser,
+  ElementHandle,
+  HTTPRequest,
+  Page,
+} from "puppeteer";
 import querystring from "querystring";
 import _debug from "debug";
 import { CLIError } from "./CLIError";
@@ -282,10 +287,7 @@ const states = [
   {
     name: "TFA instructions",
     selector: `#idDiv_SAOTCAS_Description`,
-    async handler(
-      page: Page,
-      selected: ElementHandle
-    ): Promise<void> {
+    async handler(page: Page, selected: ElementHandle): Promise<void> {
       const descriptionMessage = (await page.evaluate(
         // eslint-disable-next-line
         (description) => description.textContent,
@@ -321,10 +323,7 @@ const states = [
   {
     name: "TFA failed",
     selector: `#idDiv_SAASDS_Description,#idDiv_SAASTO_Description`,
-    async handler(
-      page: Page,
-      selected: ElementHandle
-    ): Promise<void> {
+    async handler(page: Page, selected: ElementHandle): Promise<void> {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const descriptionMessage = await page.evaluate(
         // eslint-disable-next-line
@@ -424,10 +423,7 @@ const states = [
   {
     name: "Service exception",
     selector: "#service_exception_message",
-    async handler(
-      page: Page,
-      selected: ElementHandle
-    ): Promise<void> {
+    async handler(page: Page, selected: ElementHandle): Promise<void> {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const descriptionMessage = await page.evaluate(
         // eslint-disable-next-line
