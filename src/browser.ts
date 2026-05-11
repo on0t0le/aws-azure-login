@@ -1,4 +1,8 @@
-import { computeExecutablePath, detectBrowserPlatform, Browser } from "@puppeteer/browsers";
+import {
+  computeExecutablePath,
+  detectBrowserPlatform,
+  Browser,
+} from "@puppeteer/browsers";
 import path from "path";
 import { existsSync, readdirSync } from "fs";
 
