@@ -13,6 +13,7 @@ import puppeteer, {
 } from "puppeteer";
 import _debug from "debug";
 import { CLIError } from "./CLIError";
+import { getBrowserExecutablePath } from "./browser";
 import { awsConfig, ProfileConfig } from "./awsConfig";
 import proxy from "proxy-agent";
 import { paths } from "./paths";
@@ -715,10 +716,12 @@ export const login = {
         args.push("--disable-gpu");
       }
 
+      const executablePath = getBrowserExecutablePath();
       browser = await puppeteer.launch({
         headless,
         args,
         ignoreDefaultArgs,
+        ...(executablePath && { executablePath }),
       });
 
       // Wait for a bit as sometimes the browser isn't ready.
