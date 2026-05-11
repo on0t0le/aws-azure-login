@@ -16,6 +16,6 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 24
-      - run: yarn install
-      - run: yarn test
-      - run: yarn build
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
