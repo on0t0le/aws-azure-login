@@ -11,7 +11,6 @@ import puppeteer, {
   HTTPRequest,
   Page,
 } from "puppeteer";
-import querystring from "querystring";
 import _debug from "debug";
 import { CLIError } from "./CLIError";
 import { awsConfig, ProfileConfig } from "./awsConfig";
@@ -857,7 +856,9 @@ export const login = {
         throw new Error("SAML response not found");
       }
 
-      const samlResponse = querystring.parse(samlResponseData).SAMLResponse;
+      const samlResponse = new URLSearchParams(samlResponseData).get(
+        "SAMLResponse"
+      );
 
       debug("Found SAML response", samlResponse);
 
