@@ -1,10 +1,10 @@
 .github
+.claude
 src
 typings
-.dockerignore
+docs
 .editorconfig
 .eslintrc.json
-docker-launch.sh
-Dockerfile
-snapcraft.yaml
 tsconfig.json
+yarn.lock
+*.snap

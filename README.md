@@ -1,5 +1,5 @@
-[![view on npm](http://img.shields.io/npm/v/aws-azure-login.svg)](https://www.npmjs.org/package/aws-azure-login)
-[![npm module downloads per month](http://img.shields.io/npm/dm/aws-azure-login.svg)](https://www.npmjs.org/package/aws-azure-login)
+[![view on npm](https://img.shields.io/npm/v/%40on0t0le%2Faws-azure-login.svg)](https://www.npmjs.org/package/@on0t0le/aws-azure-login)
+[![npm module downloads per month](https://img.shields.io/npm/dm/%40on0t0le%2Faws-azure-login.svg)](https://www.npmjs.org/package/@on0t0le/aws-azure-login)
 
 # aws-azure-login
 
@@ -7,27 +7,23 @@ If your organization uses [Azure Active Directory](https://azure.microsoft.com) 
 
 ## Installation
 
-Installation can be done in any of the following platform - Windows, Linux, Docker, Snap
+Install [Node.js](https://nodejs.org/) v24 or higher, then:
+
+    npm install -g @on0t0le/aws-azure-login
 
 ### Windows
 
-Install [Node.js](https://nodejs.org/) v12 or higher. Then install aws-azure-login with npm:
+You may need to install the puppeteer dependency if you see a missing Chrome/Chromium error:
 
-    npm install -g aws-azure-login
-
-You may need to install puppeteer dependency, if you're getting missing chrome or chromium message
-
-    node <node_modules_dir>/aws-azure-login/node_modules/puppeteer/install.js
+    node <node_modules_dir>/@on0t0le/aws-azure-login/node_modules/puppeteer/install.js
 
 ### Linux
 
-In Linux you can either install for all users or just the current user. In either case, you must first install [Node.js](https://nodejs.org/) v12 or higher and any [puppeteer dependencies](https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch). Then follow the appropriate instructions.
+In Linux you can either install for all users or just the current user. You must first install any [puppeteer dependencies](https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch).
 
 #### Option A: Install for All Users
 
-Install aws-azure-login globally with npm:
-
-    sudo npm install -g aws-azure-login --unsafe-perm
+    sudo npm install -g @on0t0le/aws-azure-login --unsafe-perm
 
 Puppeteer doesn't install globally with execution permissions for all users so you'll need to modify them:
 
@@ -44,28 +40,9 @@ First configure npm to install global packages in [your home directory](https://
     echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.profile
     source ~/.profile
 
-Then install aws-azure-login:
+Then install:
 
-    npm install -g aws-azure-login
-
-### Docker
-
-A Docker image has been built with aws-azure-login preinstalled. You simply need to run the command with a volume mounted to your AWS configuration directory.
-
-    docker run --rm -it -v ~/.aws:/root/.aws aws-azure-login/aws-azure-login
-
-The Docker image is configured with an entrypoint so you can just feed any arguments in at the end.
-
-You can also put the docker-launch.sh script into your bin directory for the aws-azure-login command to function as usual:
-
-    sudo curl -o /usr/local/bin/aws-azure-login https://raw.githubusercontent.com/aws-azure-login/aws-azure-login/main/docker-launch.sh -L
-    sudo chmod o+x /usr/local/bin/aws-azure-login
-
-Now just run `aws-azure-login`.
-
-### Snap
-
-https://snapcraft.io/aws-azure-login
+    npm install -g @on0t0le/aws-azure-login
 
 ## Usage
 

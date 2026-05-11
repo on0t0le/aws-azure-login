@@ -1,18 +1,22 @@
 {
-  "name": "aws-azure-login",
+  "name": "@on0t0le/aws-azure-login",
   "version": "3.6.5",
   "description": "Use Azure AD SSO to log into the AWS CLI.",
   "main": "index.js",
   "author": {
-    "name": "aws-azure-login devs",
-    "url": "https://github.com/aws-azure-login"
+    "name": "on0t0le",
+    "url": "https://github.com/on0t0le"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aws-azure-login/aws-azure-login.git"
+    "url": "https://github.com/on0t0le/aws-azure-login.git"
   },
-  "bugs": "https://github.com/aws-azure-loginc/aws-azure-login/issues",
+  "bugs": "https://github.com/on0t0le/aws-azure-login/issues",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "engines": {
     "node": ">=24.0"
   },
