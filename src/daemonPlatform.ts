@@ -35,7 +35,7 @@ function xmlEscape(s: string): string {
 }
 
 function systemdEscape(s: string): string {
-  return s.replace(/"/g, '\\"').replace(/%/g, "%%");
+  return s.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/%/g, "%%");
 }
 
 export function generateLaunchdPlist(
@@ -120,6 +120,7 @@ export async function registerPlatform(): Promise<void> {
       "utf8"
     );
     try {
+      execFileSync("systemctl", ["--user", "daemon-reload"], { stdio: "pipe" });
       execFileSync(
         "systemctl",
         ["--user", "enable", "--now", SYSTEMD_SERVICE_NAME],

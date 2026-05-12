@@ -52,6 +52,13 @@ export async function watchLoop(): Promise<void> {
         if (!config) continue;
 
         if (String(config.azure_default_remember_me) === "true") {
+          if (!config.azure_default_password) {
+            console.warn(
+              `[${new Date().toISOString()}] Skipping ${profile}: remember_me=true but no azure_default_password set`
+            );
+            sendNotification(profile);
+            continue;
+          }
           console.log(
             `[${new Date().toISOString()}] Refreshing profile: ${profile}`
           );
