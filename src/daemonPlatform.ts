@@ -34,6 +34,10 @@ function xmlEscape(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
+function systemdEscape(s: string): string {
+  return s.replace(/"/g, '\\"').replace(/%/g, "%%");
+}
+
 export function generateLaunchdPlist(
   nodePath: string,
   scriptPath: string
@@ -55,9 +59,9 @@ export function generateLaunchdPlist(
   <key>RunAtLoad</key>
   <true/>
   <key>StandardOutPath</key>
-  <string>${LOG_PATH}</string>
+  <string>${xmlEscape(LOG_PATH)}</string>
   <key>StandardErrorPath</key>
-  <string>${LOG_PATH}</string>
+  <string>${xmlEscape(LOG_PATH)}</string>
 </dict>
 </plist>`;
 }
@@ -70,10 +74,10 @@ export function generateSystemdUnit(
 Description=aws-azure-login credential auto-refresh daemon
 
 [Service]
-ExecStart="${nodePath}" "${scriptPath}" --daemon-worker
+ExecStart="${systemdEscape(nodePath)}" "${systemdEscape(scriptPath)}" --daemon-worker
 Restart=always
-StandardOutput=append:${LOG_PATH}
-StandardError=append:${LOG_PATH}
+StandardOutput="append:${systemdEscape(LOG_PATH)}"
+StandardError="append:${systemdEscape(LOG_PATH)}"
 
 [Install]
 WantedBy=default.target`;
