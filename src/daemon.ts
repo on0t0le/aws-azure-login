@@ -50,7 +50,7 @@ export async function watchLoop(): Promise<void> {
         if (!aboutToExpire) continue;
 
         const config = await awsConfig.getProfileConfigAsync(profile);
-        if (!config) continue;
+        if (!config || !config.azure_tenant_id) continue;
 
         if (String(config.azure_default_remember_me) === "true") {
           if (!config.azure_default_password) {
@@ -107,7 +107,7 @@ function sendNotification(profile: string): void {
   try {
     if (process.platform === "darwin") {
       const escaped = body.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-      const script = `display notification "${escaped}" with title "${title}"`;
+      const script = `tell application "System Events" to display notification "${escaped}" with title "${title}"`;
       execFileSync("osascript", ["-e", script], { stdio: "pipe" });
     } else if (process.platform === "linux") {
       execFileSync("notify-send", [title, body], { stdio: "pipe" });
