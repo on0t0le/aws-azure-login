@@ -44,8 +44,9 @@ export async function watchLoop(): Promise<void> {
 
     for (const profile of profiles) {
       try {
-        const aboutToExpire =
-          await awsConfig.isProfileAboutToExpireAsync(profile);
+        const aboutToExpire = await awsConfig.isProfileAboutToExpireAsync(
+          profile
+        );
         if (!aboutToExpire) continue;
 
         const config = await awsConfig.getProfileConfigAsync(profile);

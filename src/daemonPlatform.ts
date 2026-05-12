@@ -20,11 +20,7 @@ const SYSTEMD_UNIT_PATH = path.join(
   "user",
   `${SYSTEMD_SERVICE_NAME}.service`
 );
-const LOG_PATH = path.join(
-  os.homedir(),
-  ".aws",
-  "aws-azure-login-daemon.log"
-);
+const LOG_PATH = path.join(os.homedir(), ".aws", "aws-azure-login-daemon.log");
 
 function xmlEscape(s: string): string {
   return s
@@ -74,7 +70,9 @@ export function generateSystemdUnit(
 Description=aws-azure-login credential auto-refresh daemon
 
 [Service]
-ExecStart="${systemdEscape(nodePath)}" "${systemdEscape(scriptPath)}" --daemon-worker
+ExecStart="${systemdEscape(nodePath)}" "${systemdEscape(
+    scriptPath
+  )}" --daemon-worker
 Restart=always
 StandardOutput=append:${systemdEscape(LOG_PATH)}
 StandardError=append:${systemdEscape(LOG_PATH)}
@@ -104,9 +102,13 @@ export async function registerPlatform(): Promise<void> {
     );
     const uid = os.userInfo().uid;
     try {
-      execFileSync("launchctl", ["bootstrap", `gui/${uid}`, LAUNCHD_PLIST_PATH], {
-        stdio: "pipe",
-      });
+      execFileSync(
+        "launchctl",
+        ["bootstrap", `gui/${uid}`, LAUNCHD_PLIST_PATH],
+        {
+          stdio: "pipe",
+        }
+      );
     } catch (err) {
       throw new CLIError(
         `launchctl bootstrap failed: ${(err as Error).message}`
@@ -127,9 +129,7 @@ export async function registerPlatform(): Promise<void> {
         { stdio: "pipe" }
       );
     } catch (err) {
-      throw new CLIError(
-        `systemctl enable failed: ${(err as Error).message}`
-      );
+      throw new CLIError(`systemctl enable failed: ${(err as Error).message}`);
     }
   } else {
     throw new CLIError(
@@ -149,7 +149,9 @@ export async function unregisterPlatform(): Promise<void> {
     } catch (err) {
       const msg = (err as { stderr?: Buffer }).stderr?.toString() ?? "";
       if (!msg.includes("Could not find") && !msg.includes("No such process")) {
-        throw new CLIError(`launchctl bootout failed: ${(err as Error).message}`);
+        throw new CLIError(
+          `launchctl bootout failed: ${(err as Error).message}`
+        );
       }
     }
     if (fs.existsSync(LAUNCHD_PLIST_PATH)) {
@@ -168,7 +170,9 @@ export async function unregisterPlatform(): Promise<void> {
         (err as Error).message ??
         "";
       if (!msg.includes("not loaded") && !msg.includes("No such file")) {
-        throw new CLIError(`systemctl disable failed: ${(err as Error).message}`);
+        throw new CLIError(
+          `systemctl disable failed: ${(err as Error).message}`
+        );
       }
     }
     if (fs.existsSync(SYSTEMD_UNIT_PATH)) {
@@ -198,9 +202,7 @@ export function getPlatformStatus(): string {
         { stdio: "pipe" }
       ).toString();
     } catch (err) {
-      return (
-        (err as { stdout?: Buffer }).stdout?.toString() ?? "Not running"
-      );
+      return (err as { stdout?: Buffer }).stdout?.toString() ?? "Not running";
     }
   } else {
     throw new CLIError(
