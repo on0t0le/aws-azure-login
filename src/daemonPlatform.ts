@@ -76,8 +76,8 @@ Description=aws-azure-login credential auto-refresh daemon
 [Service]
 ExecStart="${systemdEscape(nodePath)}" "${systemdEscape(scriptPath)}" --daemon-worker
 Restart=always
-StandardOutput="append:${systemdEscape(LOG_PATH)}"
-StandardError="append:${systemdEscape(LOG_PATH)}"
+StandardOutput=append:${systemdEscape(LOG_PATH)}
+StandardError=append:${systemdEscape(LOG_PATH)}
 
 [Install]
 WantedBy=default.target`;
@@ -89,6 +89,11 @@ export async function registerPlatform(): Promise<void> {
   }
   const nodePath = process.execPath;
   const scriptPath = process.argv[1];
+  if (!scriptPath) {
+    throw new CLIError(
+      "Cannot determine script path (process.argv[1] is undefined)."
+    );
+  }
   await mkdirp(path.dirname(LOG_PATH));
   if (process.platform === "darwin") {
     await mkdirp(path.dirname(LAUNCHD_PLIST_PATH));
