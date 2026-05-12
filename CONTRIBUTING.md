@@ -52,3 +52,20 @@ yarn start
 ```sh
 yarn build && node ./lib/index.js
 ```
+
+## Testing the Auto-Refresh Daemon
+
+No automated tests exist for the daemon. Manual smoke test:
+
+1. Build: `npm run build`
+2. Start daemon: `node lib/index.js --daemon start`
+3. Verify OS service registered:
+   - macOS: `launchctl list com.aws-azure-login`
+   - Linux: `systemctl --user status aws-azure-login`
+4. Tail daemon log: `tail -f ~/.aws/aws-azure-login-daemon.log`
+5. Check status: `node lib/index.js --daemon status`
+6. Stop daemon: `node lib/index.js --daemon stop`
+
+To test auto-rotation, set `aws_expiration` in `~/.aws/credentials` to ~12 minutes
+from now for a profile. Profiles with `azure_default_remember_me = true` will attempt
+a silent re-login. Profiles without it will receive an OS notification.
