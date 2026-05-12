@@ -26,6 +26,14 @@ const LOG_PATH = path.join(
   "aws-azure-login-daemon.log"
 );
 
+function xmlEscape(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 export function generateLaunchdPlist(
   nodePath: string,
   scriptPath: string
@@ -38,8 +46,8 @@ export function generateLaunchdPlist(
   <string>${LAUNCHD_LABEL}</string>
   <key>ProgramArguments</key>
   <array>
-    <string>${nodePath}</string>
-    <string>${scriptPath}</string>
+    <string>${xmlEscape(nodePath)}</string>
+    <string>${xmlEscape(scriptPath)}</string>
     <string>--daemon-worker</string>
   </array>
   <key>KeepAlive</key>
@@ -62,7 +70,7 @@ export function generateSystemdUnit(
 Description=aws-azure-login credential auto-refresh daemon
 
 [Service]
-ExecStart=${nodePath} ${scriptPath} --daemon-worker
+ExecStart="${nodePath}" "${scriptPath}" --daemon-worker
 Restart=always
 StandardOutput=append:${LOG_PATH}
 StandardError=append:${LOG_PATH}
@@ -72,8 +80,12 @@ WantedBy=default.target`;
 }
 
 export async function registerPlatform(): Promise<void> {
+  if (isPlatformRunning()) {
+    throw new CLIError("Service already registered. Run --daemon stop first.");
+  }
   const nodePath = process.execPath;
   const scriptPath = process.argv[1];
+  await mkdirp(path.dirname(LOG_PATH));
   if (process.platform === "darwin") {
     await mkdirp(path.dirname(LAUNCHD_PLIST_PATH));
     fs.writeFileSync(
@@ -81,13 +93,14 @@ export async function registerPlatform(): Promise<void> {
       generateLaunchdPlist(nodePath, scriptPath),
       "utf8"
     );
+    const uid = os.userInfo().uid;
     try {
-      execFileSync("launchctl", ["load", LAUNCHD_PLIST_PATH], {
+      execFileSync("launchctl", ["bootstrap", `gui/${uid}`, LAUNCHD_PLIST_PATH], {
         stdio: "pipe",
       });
     } catch (err) {
       throw new CLIError(
-        `launchctl load failed: ${(err as Error).message}`
+        `launchctl bootstrap failed: ${(err as Error).message}`
       );
     }
   } else if (process.platform === "linux") {
@@ -118,12 +131,16 @@ export async function registerPlatform(): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/require-await
 export async function unregisterPlatform(): Promise<void> {
   if (process.platform === "darwin") {
+    const uid = os.userInfo().uid;
     try {
-      execFileSync("launchctl", ["unload", LAUNCHD_PLIST_PATH], {
+      execFileSync("launchctl", ["bootout", `gui/${uid}/${LAUNCHD_LABEL}`], {
         stdio: "pipe",
       });
-    } catch {
-      // already unloaded
+    } catch (err) {
+      const msg = (err as { stderr?: Buffer }).stderr?.toString() ?? "";
+      if (!msg.includes("Could not find") && !msg.includes("No such process")) {
+        throw new CLIError(`launchctl bootout failed: ${(err as Error).message}`);
+      }
     }
     if (fs.existsSync(LAUNCHD_PLIST_PATH)) {
       fs.unlinkSync(LAUNCHD_PLIST_PATH);
@@ -135,8 +152,14 @@ export async function unregisterPlatform(): Promise<void> {
         ["--user", "disable", "--now", SYSTEMD_SERVICE_NAME],
         { stdio: "pipe" }
       );
-    } catch {
-      // already stopped
+    } catch (err) {
+      const msg =
+        (err as { stderr?: Buffer }).stderr?.toString() ??
+        (err as Error).message ??
+        "";
+      if (!msg.includes("not loaded") && !msg.includes("No such file")) {
+        throw new CLIError(`systemctl disable failed: ${(err as Error).message}`);
+      }
     }
     if (fs.existsSync(SYSTEMD_UNIT_PATH)) {
       fs.unlinkSync(SYSTEMD_UNIT_PATH);
@@ -198,5 +221,7 @@ export function isPlatformRunning(): boolean {
       return false;
     }
   }
-  return false;
+  throw new CLIError(
+    `Unsupported platform: ${process.platform}. Supported: darwin, linux.`
+  );
 }
