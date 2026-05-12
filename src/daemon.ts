@@ -51,7 +51,7 @@ export async function watchLoop(): Promise<void> {
         const config = await awsConfig.getProfileConfigAsync(profile);
         if (!config) continue;
 
-        if (config.azure_default_remember_me) {
+        if (String(config.azure_default_remember_me) === "true") {
           console.log(
             `[${new Date().toISOString()}] Refreshing profile: ${profile}`
           );
@@ -87,7 +87,9 @@ export async function watchLoop(): Promise<void> {
 
   await poll();
   setInterval(() => {
-    void poll();
+    poll().catch((err: unknown) =>
+      console.error(`[${new Date().toISOString()}] Poll error:`, err)
+    );
   }, POLL_INTERVAL_MS);
 }
 
@@ -96,7 +98,8 @@ function sendNotification(profile: string): void {
   const body = `Profile ${profile} expires soon. Run: aws-azure-login -p ${profile}`;
   try {
     if (process.platform === "darwin") {
-      const script = `display notification "${body.replace(/"/g, '\\"')}" with title "${title}"`;
+      const escaped = body.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+      const script = `display notification "${escaped}" with title "${title}"`;
       execFileSync("osascript", ["-e", script], { stdio: "pipe" });
     } else if (process.platform === "linux") {
       execFileSync("notify-send", [title, body], { stdio: "pipe" });
