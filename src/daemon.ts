@@ -12,20 +12,20 @@ const POLL_INTERVAL_MS = 60 * 1000;
 
 export async function startDaemon(): Promise<void> {
   if (isPlatformRunning()) {
-    console.log("Daemon already running.");
+    console.log("Autopilot already enabled.");
     return;
   }
   await registerPlatform();
-  console.log("Daemon started and registered as OS service.");
+  console.log("Autopilot enabled.");
 }
 
 export async function stopDaemon(): Promise<void> {
   if (!isPlatformRunning()) {
-    console.log("Daemon not running.");
+    console.log("Autopilot not running.");
     return;
   }
   await unregisterPlatform();
-  console.log("Daemon stopped and unregistered.");
+  console.log("Autopilot disabled.");
 }
 
 export async function watchLoop(): Promise<void> {
