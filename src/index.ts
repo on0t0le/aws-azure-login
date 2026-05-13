@@ -6,7 +6,6 @@ process.on("SIGTERM", () => process.exit(1));
 import { Command } from "commander";
 import { configureProfileAsync } from "./configureProfileAsync";
 import { login } from "./login";
-import { CLIError } from "./CLIError";
 
 const program = new Command();
 
@@ -54,7 +53,10 @@ program
     "--disable-gpu",
     "Tell Puppeteer to pass the --disable-gpu flag to Chromium"
   )
-  .option("--autopilot", "Start the autopilot background service [EXPERIMENTAL]")
+  .option(
+    "--autopilot",
+    "Start the autopilot background service [EXPERIMENTAL]"
+  )
   .option("--no-autopilot", "Stop the autopilot background service")
   .option(
     "--autopilot-worker",

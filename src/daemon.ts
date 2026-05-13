@@ -28,7 +28,6 @@ export async function stopDaemon(): Promise<void> {
   console.log("Daemon stopped and unregistered.");
 }
 
-
 export async function watchLoop(): Promise<void> {
   console.log("aws-azure-login autopilot started. Polling every 60s.");
 

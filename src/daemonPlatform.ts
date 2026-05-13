@@ -83,7 +83,7 @@ WantedBy=default.target`;
 
 export async function registerPlatform(): Promise<void> {
   if (isPlatformRunning()) {
-    throw new CLIError("Service already registered. Run --daemon stop first.");
+    throw new CLIError("Service already registered. Run --no-autopilot first.");
   }
   const nodePath = process.execPath;
   const scriptPath = process.argv[1];
