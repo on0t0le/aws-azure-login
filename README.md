@@ -156,6 +156,29 @@ If you configure all profiles to stay logged in, you can easily skip the prompts
 This will allow you to automate the credentials refresh procedure, eg. by running a cronjob every 5 minutes.
 To skip unnecessary calls, the credentials are only getting refreshed if the time to expire is lower than 11 minutes.
 
+## Experimental Features
+
+### Autopilot (background credential refresh)
+
+> ⚠️ Experimental — behavior may change.
+
+Autopilot runs a background OS service that automatically refreshes
+credentials before they expire.
+
+**Enable per profile** (during `--configure` or manually in `~/.aws/config`):
+
+    azure_default_autopilot = true
+
+Autopilot only refreshes profiles with `azure_default_autopilot=true`
+and `azure_default_remember_me=true` + `azure_default_password` set.
+
+**Commands:**
+
+    aws-azure-login --autopilot       # start background service
+    aws-azure-login --no-autopilot    # stop background service
+
+Supported platforms: macOS (launchd), Linux (systemd).
+
 ## Getting Your Tenant ID and App ID URI
 
 Your Azure AD system admin should be able to provide you with your Tenant ID and App ID URI. If you can't get it from them, you can scrape it from a login page from the myapps.microsoft.com page.

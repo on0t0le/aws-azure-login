@@ -6,7 +6,6 @@ process.on("SIGTERM", () => process.exit(1));
 import { Command } from "commander";
 import { configureProfileAsync } from "./configureProfileAsync";
 import { login } from "./login";
-import { CLIError } from "./CLIError";
 
 const program = new Command();
 
@@ -55,12 +54,13 @@ program
     "Tell Puppeteer to pass the --disable-gpu flag to Chromium"
   )
   .option(
-    "--daemon <action>",
-    "Manage the auto-refresh daemon: start | stop | status"
+    "--autopilot",
+    "Start the autopilot background service [EXPERIMENTAL]"
   )
+  .option("--no-autopilot", "Stop the autopilot background service")
   .option(
-    "--daemon-worker",
-    "Internal: run the daemon watch loop (do not call directly)"
+    "--autopilot-worker",
+    "Internal: run the autopilot watch loop (do not call directly)"
   )
   .parse(process.argv);
 
@@ -82,25 +82,27 @@ const disableGpu = !!options.disableGpu;
 
 Promise.resolve()
   .then(async () => {
-    if (options.daemonWorker as boolean | undefined) {
+    if (options.autopilotWorker as boolean | undefined) {
       const { watchLoop } = await import("./daemon");
       return watchLoop();
     }
 
-    if (options.daemon as string | undefined) {
-      const { startDaemon, stopDaemon, statusDaemon } = await import(
-        "./daemon"
-      );
-      const action = options.daemon as string;
-      if (action === "start") return startDaemon();
-      if (action === "stop") return stopDaemon();
-      if (action === "status") {
-        statusDaemon();
-        return;
-      }
-      throw new CLIError(
-        `Unknown daemon action: '${action}'. Use start, stop, or status.`
-      );
+    const autopilotSource = program.getOptionValueSource("autopilot");
+    const enableAutopilot =
+      autopilotSource === "cli" && (options.autopilot as boolean) === true;
+    const disableAutopilot =
+      autopilotSource === "cli" && (options.autopilot as boolean) === false;
+
+    if (enableAutopilot) {
+      const { startDaemon } = await import("./daemon");
+      await startDaemon();
+      return;
+    }
+
+    if (disableAutopilot) {
+      const { stopDaemon } = await import("./daemon");
+      await stopDaemon();
+      return;
     }
 
     if (options.allProfiles as boolean | undefined) {
