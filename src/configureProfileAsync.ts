@@ -41,6 +41,20 @@ export async function configureProfileAsync(
       },
     },
     {
+      name: "autopilot",
+      message:
+        "Autopilot: automatically refresh credentials in the background (true|false)",
+      default:
+        (profile &&
+          profile.azure_default_autopilot !== undefined &&
+          profile.azure_default_autopilot.toString()) ||
+        "false",
+      validate: (input): boolean | string => {
+        if (input === "true" || input === "false") return true;
+        return "Autopilot must be either true or false";
+      },
+    },
+    {
       name: "defaultRoleArn",
       message: "Default Role ARN (if multiple):",
       default: profile && profile.azure_default_role_arn,
@@ -71,6 +85,7 @@ export async function configureProfileAsync(
     azure_default_role_arn: answers.defaultRoleArn as string,
     azure_default_duration_hours: answers.defaultDurationHours as string,
     azure_default_remember_me: (answers.rememberMe as string) === "true",
+    azure_default_autopilot: (answers.autopilot as string) === "true",
     region: answers.region as string,
   });
 
