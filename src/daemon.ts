@@ -41,12 +41,9 @@ export async function watchLoop(): Promise<void> {
         const config = await awsConfig.getProfileConfigAsync(profile);
         if (!config || !config.azure_tenant_id) continue;
 
-        if (String(config.azure_default_autopilot) !== "true") continue;
+        if (config.azure_default_autopilot !== true) continue;
 
-        if (
-          String(config.azure_default_remember_me) !== "true" ||
-          !config.azure_default_password
-        ) {
+        if (!config.azure_default_remember_me || !config.azure_default_password) {
           console.warn(
             `[${new Date().toISOString()}] Skipping ${profile}: autopilot=true but azure_default_remember_me and azure_default_password must both be set.`
           );

@@ -87,30 +87,21 @@ Promise.resolve()
       return watchLoop();
     }
 
-    // Use process.argv directly to distinguish --autopilot from --no-autopilot
-    // (both affect options.autopilot; rawArgs gives us the explicit flag passed)
-    const enableAutopilot = process.argv.includes("--autopilot");
-    const disableAutopilot = process.argv.includes("--no-autopilot");
+    const autopilotSource = program.getOptionValueSource("autopilot");
+    const enableAutopilot =
+      autopilotSource === "cli" && (options.autopilot as boolean) === true;
+    const disableAutopilot =
+      autopilotSource === "cli" && (options.autopilot as boolean) === false;
 
     if (enableAutopilot) {
-      const { startDaemon, isPlatformRunning } = await import("./daemon");
-      if (isPlatformRunning()) {
-        console.log("Autopilot already enabled.");
-        return;
-      }
+      const { startDaemon } = await import("./daemon");
       await startDaemon();
-      console.log("Autopilot enabled.");
       return;
     }
 
     if (disableAutopilot) {
-      const { stopDaemon, isPlatformRunning } = await import("./daemon");
-      if (!isPlatformRunning()) {
-        console.log("Autopilot not running.");
-        return;
-      }
+      const { stopDaemon } = await import("./daemon");
       await stopDaemon();
-      console.log("Autopilot disabled.");
       return;
     }
 
