@@ -96,3 +96,5 @@ export async function watchLoop(): Promise<void> {
     );
   }, POLL_INTERVAL_MS);
 }
+
+export { isPlatformRunning } from "./daemonPlatform";
