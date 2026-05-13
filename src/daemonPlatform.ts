@@ -48,7 +48,7 @@ export function generateLaunchdPlist(
   <array>
     <string>${xmlEscape(nodePath)}</string>
     <string>${xmlEscape(scriptPath)}</string>
-    <string>--daemon-worker</string>
+    <string>--autopilot-worker</string>
   </array>
   <key>KeepAlive</key>
   <true/>
@@ -72,7 +72,7 @@ Description=aws-azure-login credential auto-refresh daemon
 [Service]
 ExecStart="${systemdEscape(nodePath)}" "${systemdEscape(
     scriptPath
-  )}" --daemon-worker
+  )}" --autopilot-worker
 Restart=always
 StandardOutput=append:${systemdEscape(LOG_PATH)}
 StandardError=append:${systemdEscape(LOG_PATH)}
