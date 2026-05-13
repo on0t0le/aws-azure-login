@@ -4,7 +4,6 @@ import { login } from "./login";
 import {
   registerPlatform,
   unregisterPlatform,
-  getPlatformStatus,
   isPlatformRunning,
 } from "./daemonPlatform";
 
@@ -29,9 +28,6 @@ export async function stopDaemon(): Promise<void> {
   console.log("Daemon stopped and unregistered.");
 }
 
-export function statusDaemon(): void {
-  console.log(getPlatformStatus());
-}
 
 export async function watchLoop(): Promise<void> {
   console.log("aws-azure-login autopilot started. Polling every 60s.");
