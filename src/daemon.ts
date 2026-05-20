@@ -44,11 +44,11 @@ export async function watchLoop(): Promise<void> {
         if (config.azure_default_autopilot !== true) continue;
 
         if (
-          !config.azure_default_remember_me ||
+          !config.azure_default_remember_me &&
           !config.azure_default_password
         ) {
           console.warn(
-            `[${new Date().toISOString()}] Skipping ${profile}: autopilot=true but azure_default_remember_me and azure_default_password must both be set.`
+            `[${new Date().toISOString()}] Skipping ${profile}: autopilot=true but either azure_default_remember_me or azure_default_password must be set.`
           );
           continue;
         }
